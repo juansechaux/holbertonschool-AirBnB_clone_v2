@@ -117,7 +117,6 @@ class HBNBCommand(cmd.Cmd):
         """ Create an object of any class"""
         args = arg.split()
         if len(args) > 1:
-            print(args[0])
             """ Create an object of any class"""
             if args[0] not in HBNBCommand.classes:
                 print("** class doesn't exist **")
@@ -128,18 +127,15 @@ class HBNBCommand(cmd.Cmd):
                 parts = argument.split('=')
                 if len(parts) == 2:
                     attr_name = parts[0]
-                    # attr_value = parts[1].strip('\"')
                     attr_value = parts[1]
                     if hasattr(new_instance, attr_name):
-                        if '.' in attr_value:
-                            setattr(new_instance, attr_name, float(attr_value))
-                        elif '"' in attr_value:
+                        if attr_name in HBNBCommand.types:
+                            setattr(new_instance, attr_name,
+                                    HBNBCommand.types[attr_name](attr_value))
+                        else:
                             new_attr1 = attr_value.strip('"')
                             new_attr2 = new_attr1.replace("_", " ")
-                            print(new_attr2)
                             setattr(new_instance, attr_name, new_attr2)
-                        else:
-                            setattr(new_instance, attr_name, int(attr_value))
             storage.save()
             print(new_instance.id)
             storage.save()
@@ -148,10 +144,10 @@ class HBNBCommand(cmd.Cmd):
             if not args:
                 print("** class name missing **")
                 return
-            elif args not in HBNBCommand.classes:
+            elif args[0] not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            new_instance = HBNBCommand.classes[args]()
+            new_instance = HBNBCommand.classes[args[0]]()
             storage.save()
             print(new_instance.id)
             storage.save()
