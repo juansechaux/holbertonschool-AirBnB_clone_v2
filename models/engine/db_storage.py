@@ -42,7 +42,9 @@ class DBStorage:
             list_objs = self.__session.query(cls).all()
         dict_objs = {}
         for obj in list_objs:
-            dict_objs[obj.__class__.__name__ + "." + obj.id](obj)
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            dict_objs[key] = obj
+            # dict_objs[obj.__class__.__name__ + "." + obj.id](obj)
         return dict_objs
 
     def new(self, obj):
@@ -58,12 +60,13 @@ class DBStorage:
         self.__session.delete(obj)
 
     def reload(self):
-        """Create all tables in the db and establish a database session"""
+        """Create all tables in the database and initialize a new session."""
         Base.metadata.create_all(self.__engine)
-        Session = scoped_session(sessionmaker(bind=self.__engine,
-                                              expire_on_commit=False))
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        Session = scoped_session(session_factory)
         self.__session = Session()
 
     def close(self):
-        """Call close() method on the class Session"""
+        """Close the working SQLAlchemy session."""
         self.__session.close()

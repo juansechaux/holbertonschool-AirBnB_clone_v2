@@ -136,8 +136,10 @@ class HBNBCommand(cmd.Cmd):
                             new_attr1 = attr_value.strip('"')
                             new_attr2 = new_attr1.replace("_", " ")
                             setattr(new_instance, attr_name, new_attr2)
-            storage.save()
+            new_instance.save()
             print(new_instance.id)
+            # storage.save()
+            # print(new_instance.id)
         else:
             if not args:
                 print("** class name missing **")
@@ -146,9 +148,11 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
                 return
             new_instance = HBNBCommand.classes[args[0]]()
-            storage.save()
+            new_instance.save()
             print(new_instance.id)
-            storage.save()
+            # storage.save()
+            # print(new_instance.id)
+            # storage.save()
 
     def help_create(self):
         """ Help information for the create method """
