@@ -32,7 +32,7 @@ class DBStorage:
         '''Show all the objects or a specific group'''
         list_objs = []
         if cls is None:
-            # list_objs += self.__session.query(User).all()
+            list_objs += self.__session.query(User).all()
             list_objs += self.__session.query(State).all()
             list_objs += self.__session.query(City).all()
             # list_objs += self.__session.query(Amenity).all()
