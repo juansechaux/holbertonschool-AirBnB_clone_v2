@@ -1,11 +1,18 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
-import models
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer, Table, Float
 from sqlalchemy.orm import relationship
 from models.review import Review
 from models.amenity import Amenity
+from os import getenv
+import models
+
+
+place_amenity = Table('place_amenity', Base.metadata,
+                          Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
+                          Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False),
+                          extend_existing=True)
 
 
 class Place(BaseModel, Base):
@@ -25,33 +32,40 @@ class Place(BaseModel, Base):
     reviews = relationship('Review', cascade='delete', backref='place')
     amenities = relationship('Amenity', secondary='place_amenity', viewonly=False)
 
-    @property
-    def reviews(self):
-        from models import storage
-        reviews_list = []
-        all_reviews = storage.all(Review)
-        for review in all_reviews.values():
-            if review.place_id == self.id:
-                reviews_list.append(review)
-        return reviews_list
-    
-    metadata = Base.metadata
-    place_amenity = Table('place_amenity', metadata,
-                          Column('place_id', String(60), ForeignKey('places.id'), primary_key=True),
-                          Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True))
-    
-    @property
-    def amenities(self):
-        """Getter attribute that returns the list of Amenity instances."""
-        amenities_list = []
-        all_amenities = models.storage.all(Amenity)
-        for amenity in all_amenities.values():
-            if amenity.id in self.amenity_ids:
-                amenities_list.append(amenity)
-        return amenities_list
+    if getenv("HBNB_TYPE_STORAGE") != "db":
+        @property
+        def reviews(self):
+            """ Getter of reviews """
+            reviews = models.storage.all(Review)
+            list_reviews = []
+            for r in reviews.values():
+                if self.id == r.place_id:
+                    list_reviews.append(r)
+            return list_reviews
 
-    @amenities.setter
-    def amenities(self, amenity_obj):
-        """Setter attribute that handles append method for adding an Amenity.id to amenity_ids."""
-        if isinstance(amenity_obj, Amenity):
-            self.amenity_ids.append(amenity_obj.id)
+        @property
+        def amenities(self):
+            """Getter of amenities """
+            return [ame for ame in models.storage.all(Amenity).values()
+                    if ame.id in self.amenity_ids]
+
+        @amenities.setter
+        def amenities(self, amenity):
+            """Setter of 1 amenity """
+            if type(amenity) == Amenity:
+                self.amenity_ids.append(amenity.id)
+    # @property
+    # def amenities(self):
+    #     """Getter attribute that returns the list of Amenity instances."""
+    #     amenities_list = []
+    #     all_amenities = models.storage.all(Amenity)
+    #     for amenity in all_amenities.values():
+    #         if amenity.id in self.amenity_ids:
+    #             amenities_list.append(amenity)
+    #     return amenities_list
+
+    # @amenities.setter
+    # def amenities(self, amenity_obj):
+    #     """Setter attribute that handles append method for adding an Amenity.id to amenity_ids."""
+    #     if isinstance(amenity_obj, Amenity):
+    #         self.amenity_ids.append(amenity_obj.id)
