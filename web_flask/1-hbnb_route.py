@@ -10,12 +10,14 @@ app = Flask(__name__)
 # Define the main route ("/") with strict_slashes=False option
 @app.route("/", strict_slashes=False)
 def hello_hbnb():
+    '''Define the main route ("/") with strict_slashes=False option'''
     return "Hello HBNB!"
 
 
 # Define a new route ("/hbnb") with strict_slashes=False option
 @app.route("/hbnb", strict_slashes=False)
 def hello_hbnb():
+    '''Define a new route ("/hbnb") with strict_slashes=False option'''
     return "HBNB"
 
 
