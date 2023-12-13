@@ -30,7 +30,7 @@ class Place(BaseModel, Base):
     longitude = Column(Float(), nullable=True)
     amenity_ids = []
     reviews = relationship('Review', cascade='delete', backref='place')
-    amenities = relationship('Amenity', secondary='place_amenity', viewonly=False)
+    amenities = relationship('Amenity', secondary='place_amenity', viewonly=False, overlaps="place_amenities")
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
@@ -54,18 +54,3 @@ class Place(BaseModel, Base):
             """Setter of 1 amenity """
             if type(amenity) == Amenity:
                 self.amenity_ids.append(amenity.id)
-    # @property
-    # def amenities(self):
-    #     """Getter attribute that returns the list of Amenity instances."""
-    #     amenities_list = []
-    #     all_amenities = models.storage.all(Amenity)
-    #     for amenity in all_amenities.values():
-    #         if amenity.id in self.amenity_ids:
-    #             amenities_list.append(amenity)
-    #     return amenities_list
-
-    # @amenities.setter
-    # def amenities(self, amenity_obj):
-    #     """Setter attribute that handles append method for adding an Amenity.id to amenity_ids."""
-    #     if isinstance(amenity_obj, Amenity):
-    #         self.amenity_ids.append(amenity_obj.id)
