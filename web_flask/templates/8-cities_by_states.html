@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <HTML lang="en">
-    <HEAD>
-        <TITLE>HBNB</TITLE>
-    </HEAD>
-    <BODY>
-        <H1>States</H1>
-        <UL>
-        {% for key, value in dict_states.items() %}
-            <LI>{{ value.id }}: <B>{{ value.name }}</B></LI>
+  <HEAD>
+      <TITLE>HBNB</TITLE>
+  </HEAD>
+  <BODY>
+    <H1>States</H1>
+      <UL>
+        {% for state in states %}
+        <LI>{{ state.id }}: <B>{{ state.name }}</B>
             <UL>
-            {% for key_city, value_city in dict_cities.items() %}
-                {% if value_city.state_id == value.id %}
-                <LI>{{ value_city.id }}: <B>{{ value_city.name }}</B></LI>
-                {%endif%}
-            {% endfor %}
+                {% for city in cities -%}
+                {% if state.id == city.state_id %}
+                <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
+                {% endif %}
+                {%- endfor %}
             </UL>
+        </LI>
         {% endfor %}
-        </UL>
-    </BODY>
+    </UL> 
+  </BODY>
 </HTML>

@@ -18,23 +18,13 @@ def clean_up_all(exc):
 
 @app.route("/cities_by_states", strict_slashes=False)
 def states_list():
-    # Obtener todos los objetos State
-    states = storage.all(State).values()
-
-    # Ordenar los estados alfabéticamente por el atributo 'name'
-    sorted_states = sorted(states, key=lambda state: state.name)
-
-    # Crear un diccionario de estados ordenados
-    dict_states = {state.id: state for state in sorted_states}
-
-    # Se ordernan las ciudades de la a-z
-    cities = storage.all(City).values()
-    sorted_cities = sorted(cities, key=lambda city: city.name)
-    dict_cities = {city.id: city for city in sorted_cities}
-
+    """/states_list route"""
+    states_list = list(storage.all(State).values())
+    states_list.sort(key=lambda x: x.name)
+    city_list = list(storage.all(City).values())
+    city_list.sort(key=lambda x: x.name)
     return render_template('8-cities_by_states.html',
-                           dict_states=dict_states, dict_cities=dict_cities)
-
+                           states=states_list, cities=city_list)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
